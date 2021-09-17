@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container m-5 p-2 rounded mx-auto bg-light shadow">
+        <div class="row m-1 p-4">
+            <div class="col">
+                <div class="p-1 h1 test-primary text-center display-inline-block">
+                    <i class="fa fa-calendar-check-o" style="font-size:48px;color:royalblue"></i>
+                    <u style="color:royalblue">My ToDo's</u>
+                </div>
+            </div>
+        </div>
+
+        <!--Create form-->
+        <form method = "POST">
+            {% csrf_token %}
+            <div class="row m-1 p-3">
+                <div class="col col-11 mx-auto">
+                    <div class="row bg-white justify-content-center p-1">
+                        <div class="col">
+                            <input type="text" name="task_name" id="id_task_name" style="height:20px;margin:5px" maxlength="200" class="form-control form-control-lg border-0 add-todo-input bg-transparent" placeholder="Add New..."  required>
+                        </div>
+                        <div class="col-auto m-0 px-2 d-flex align-items-center">
+                            <input title="Set a due date" type="date" style="height:36px;margin:10px;" name="due_date" id="id_due_date">
+                        </div>
+                        <div class="col-auto px-0 mx-0 mr-2">
+                            <input type="submit" class="btn btn-primary" style="height:36px;margin:10px;" value="Add">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="p-2 mx-4 border-black-25 bottom-bottom"></div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Task</th>
+                    <th scope="col">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                Priority
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'home:home' %}">ALL</a>
+                                    <a class="dropdown-item" href="{% url 'home:priority' 'L' %}">Low</a>
+                                    <a class="dropdown-item" href="{% url 'home:priority' 'M' %}">Medium</a>
+                                    <a class="dropdown-item" href="{% url 'home:priority' 'H' %}">High</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </th>
+                    <th scope="col">Due Date</th>
+                    <th scope="col">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                Status
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'home:home' %}">ALL</a>
+                                    <a class="dropdown-item" href="{% url 'home:status' 'False' %}">Pending</a>
+                                    <a class="dropdown-item" href="{% url 'home:status' 'True' %}">Completed</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td scope="row">{{ forloop.counter }}</td>
+                    <td scope="row">{{ task.task_name }}</td>
+                    <td scope="row">{{ task.priority }}</td>
+                    <td scope="row">{{ task.due_date }}</td>
+                    <td scope="row">
+                        {% if task.completed == True %}
+                            Done
+                        {% else %}
+                            <a class="link" href="{% url 'home:completed' task.id %}">Mark as Complete</a></td>
+                        {% endif %}
+                    <td><a href="{% url 'home:edit' task.id %}"><i class="fa fa-edit" style="font-size:20px;color:royalblue"></i></a></td>
+                    <td><a href="{% url 'home:delete' task.id %}"><i class="fa fa-trash-o text-danger" style="font-size:20px"></i></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{%  endblock %}
